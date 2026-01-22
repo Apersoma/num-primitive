@@ -1,3 +1,9 @@
+# Release 0.3.5 (2026-01-22)
+
+- Updated to MSRV 1.93.
+- Added `PrimitiveInteger::unchecked_{shl,shr}`.
+- Added `PrimitiveSigned::unchecked_neg`.
+
 # Release 0.3.4 (2025-12-20)
 
 - Added `PrimitiveInteger::from_str_radix`.
