@@ -146,6 +146,14 @@ pub trait PrimitiveSigned:
     /// Wrapping (modular) subtraction with an unsigned integer. Computes `self - rhs`, wrapping
     /// around at the boundary of the type.
     fn wrapping_sub_unsigned(self, rhs: Self::Unsigned) -> Self;
+
+    /// Unchecked negation. Computes `-self`, assuming overflow cannot occur.
+    ///
+    /// # Safety
+    ///
+    /// This results in undefined behavior when `self == Self::MIN`, i.e. when
+    /// [`checked_neg`][PrimitiveInteger::checked_neg] would return `None`.
+    unsafe fn unchecked_neg(self) -> Self;
 }
 
 /// Trait for references to primitive signed integer types ([`PrimitiveSigned`]).
@@ -184,6 +192,9 @@ macro_rules! impl_signed {
                 fn wrapping_abs(self) -> Self;
                 fn wrapping_add_unsigned(self, rhs: Self::Unsigned) -> Self;
                 fn wrapping_sub_unsigned(self, rhs: Self::Unsigned) -> Self;
+            }
+            forward! {
+                unsafe fn unchecked_neg(self) -> Self;
             }
         }
 
