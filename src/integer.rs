@@ -492,6 +492,24 @@ pub trait PrimitiveInteger:
     /// Self::MIN`, i.e. when [`checked_mul`][Self::checked_mul] would return `None`.
     unsafe fn unchecked_mul(self, rhs: Self) -> Self;
 
+    /// Unchecked shift left. Computes `self << rhs`, assuming that
+    /// `rhs` is less than the number of bits in `self`.
+    ///
+    /// # Safety
+    ///
+    /// This results in undefined behavior if `rhs` is larger than or equal to the number of bits
+    /// in `self`, i.e. when [`checked_shl`][Self::checked_shl] would return `None`.
+    unsafe fn unchecked_shl(self, rhs: u32) -> Self;
+
+    /// Unchecked shift right. Computes `self >> rhs`, assuming that
+    /// `rhs` is less than the number of bits in `self`.
+    ///
+    /// # Safety
+    ///
+    /// This results in undefined behavior if `rhs` is larger than or equal to the number of bits
+    /// in `self`, i.e. when [`checked_shr`][Self::checked_shr] would return `None`.
+    unsafe fn unchecked_shr(self, rhs: u32) -> Self;
+
     /// Unchecked integer subtraction. Computes `self - rhs`, assuming overflow cannot occur.
     ///
     /// # Safety
@@ -668,6 +686,8 @@ macro_rules! impl_integer {
             forward! {
                 unsafe fn unchecked_add(self, rhs: Self) -> Self;
                 unsafe fn unchecked_mul(self, rhs: Self) -> Self;
+                unsafe fn unchecked_shl(self, rhs: u32) -> Self;
+                unsafe fn unchecked_shr(self, rhs: u32) -> Self;
                 unsafe fn unchecked_sub(self, rhs: Self) -> Self;
             }
         }
