@@ -1,3 +1,7 @@
+# Release 0.3.6 (2026-01-26)
+
+- Link `const` documentation to the standard library.
+
 # Release 0.3.5 (2026-01-22)
 
 - Updated to MSRV 1.93.
