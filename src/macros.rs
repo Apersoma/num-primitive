@@ -46,7 +46,22 @@ macro_rules! forward_doc {
 
 /// Declare a `const` that copies an original value
 macro_rules! use_consts {
+    (Self :: { $( $name:ident : $ty:ty ,)+ }) => {
+        $(
+            #[doc = concat!(
+                "See the inherent [`", stringify!($name), "`][",
+                "Self::", stringify!($name), "] constant."
+            )]
+            const $name: $ty = Self:: $name;
+        )+
+    };
     ($base:ident :: { $( $name:ident : $ty:ty ,)+ }) => {
-        $(const $name: $ty = $base :: $name;)+
+        $(
+            #[doc = concat!(
+                "See the standard library [`", stringify!($name), "`][",
+                stringify!($base), "::", stringify!($name), "] constant."
+            )]
+            const $name: $ty = $base :: $name;
+        )+
     };
 }
