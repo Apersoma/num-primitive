@@ -1,5 +1,10 @@
-use core::num::ParseIntError;
-
+use core::num::{NonZero, ParseIntError, TryFromIntError};
+use core::error::Error;
+use core::convert::Infallible;
+use core::cmp::Eq;
+use core::fmt::{Display, Debug};
+use core::marker::{Send, Sync, Unpin};
+use core::panic::{RefUnwindSafe, UnwindSafe};
 use crate::{PrimitiveError, PrimitiveNumber, PrimitiveNumberRef};
 
 /// Trait for all primitive [integer types], including the supertrait [`PrimitiveNumber`].
@@ -517,6 +522,58 @@ pub trait PrimitiveInteger:
     /// This results in undefined behavior when `self - rhs > Self::MAX` or `self - rhs <
     /// Self::MIN`, i.e. when [`checked_sub`][Self::checked_sub] would return `None`.
     unsafe fn unchecked_sub(self, rhs: Self) -> Self;
+
+    /// The NonZero struct for this integer
+    type NonZero: 
+        core::cmp::Eq
+        + core::cmp::Ord
+        + core::convert::TryFrom<Self, Error = TryFromIntError>
+        + core::fmt::Binary
+        + core::fmt::Debug
+        + core::fmt::LowerHex
+        + core::fmt::Octal
+        + core::fmt::UpperHex
+        + core::fmt::UpperExp
+        + core::fmt::LowerExp
+        + core::hash::Hash
+        + core::ops::BitOr<Self, Output = Self::NonZero>
+        + core::ops::BitOr<Self::NonZero, Output = Self::NonZero>
+        + core::ops::BitOrAssign<Self>
+        + core::ops::BitOrAssign<Self::NonZero>
+        + core::str::FromStr
+        + Into<Self>
+        + Copy
+        + Sized
+        + core::marker::Send
+        + core::marker::Sync
+        + core::marker::Unpin
+        + core::panic::RefUnwindSafe
+        + core::panic::UnwindSafe
+        // the error is always either TryFromIntError or Infallible and these are their shared traits
+        + core::convert::TryFrom<NonZero<i8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<i16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<i32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<i64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<i128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<isize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<u8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<u16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<u32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<u64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<u128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryFrom<NonZero<usize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<i8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<i16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<i32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<i64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<i128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<isize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<u8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<u16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<u32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<u64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<u128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
+        + core::convert::TryInto<NonZero<usize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>;
 }
 
 /// Trait for references to primitive integer types ([`PrimitiveInteger`]).
@@ -690,6 +747,8 @@ macro_rules! impl_integer {
                 unsafe fn unchecked_shr(self, rhs: u32) -> Self;
                 unsafe fn unchecked_sub(self, rhs: Self) -> Self;
             }
+            
+            type NonZero = core::num::NonZero<Self>;
         }
 
         impl PrimitiveIntegerRef<$Integer> for &$Integer {}
