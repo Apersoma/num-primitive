@@ -3,7 +3,7 @@ use core::error::Error;
 use core::convert::Infallible;
 use core::cmp::Eq;
 use core::fmt::{Display, Debug};
-use core::marker::{Send, Sync, Unpin};
+use core::marker::Unpin;
 use core::panic::{RefUnwindSafe, UnwindSafe};
 use crate::{PrimitiveError, PrimitiveNumber, PrimitiveNumberRef};
 
@@ -550,30 +550,30 @@ pub trait PrimitiveInteger:
         + core::panic::RefUnwindSafe
         + core::panic::UnwindSafe
         // the error is always either TryFromIntError or Infallible and these are their shared traits
-        + core::convert::TryFrom<NonZero<i8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<i16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<i32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<i64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<i128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<isize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<u8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<u16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<u32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<u64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<u128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryFrom<NonZero<usize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<i8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<i16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<i32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<i64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<i128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<isize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<u8>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<u16>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<u32>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<u64>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<u128>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>
-        + core::convert::TryInto<NonZero<usize>, Error: Debug+Display+Eq+Copy+From<Infallible>+Error+RefUnwindSafe+Send+Sync+Unpin+UnwindSafe>;
+        + core::convert::TryFrom<NonZero<i8>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<i16>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<i32>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<i64>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<i128>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<isize>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<u8>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<u16>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<u32>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<u64>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<u128>, Error: PrimitiveError>
+        + core::convert::TryFrom<NonZero<usize>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<i8>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<i16>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<i32>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<i64>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<i128>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<isize>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<u8>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<u16>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<u32>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<u64>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<u128>, Error: PrimitiveError>
+        + core::convert::TryInto<NonZero<usize>, Error: PrimitiveError>;
 }
 
 /// Trait for references to primitive integer types ([`PrimitiveInteger`]).
