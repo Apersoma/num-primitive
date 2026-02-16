@@ -1,10 +1,4 @@
 use core::num::{NonZero, ParseIntError, TryFromIntError};
-use core::error::Error;
-use core::convert::Infallible;
-use core::cmp::Eq;
-use core::fmt::{Display, Debug};
-use core::marker::Unpin;
-use core::panic::{RefUnwindSafe, UnwindSafe};
 use crate::{PrimitiveError, PrimitiveNumber, PrimitiveNumberRef};
 
 /// Trait for all primitive [integer types], including the supertrait [`PrimitiveNumber`].
