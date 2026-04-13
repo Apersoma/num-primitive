@@ -34,15 +34,7 @@ use crate::{PrimitiveInteger, PrimitiveIntegerRef, PrimitiveSigned};
 /// assert_eq!(gcd::<u16>(1071, 462), 21);
 /// assert_eq!(gcd::<u32>(6_700_417, 2_147_483_647), 1);
 /// ```
-pub trait PrimitiveUnsigned: 
-    PrimitiveInteger 
-    + From<u8> 
-    + TryFrom<u8, Error = Infallible> 
-    + core::ops::Div<Self::NonZero> 
-    + core::ops::DivAssign<Self::NonZero>
-    + core::ops::Rem<Self::NonZero> 
-    + core::ops::RemAssign<Self::NonZero> 
-{
+pub trait PrimitiveUnsigned: PrimitiveInteger + From<u8> + TryFrom<u8, Error = Infallible> {
     /// The signed integer type used by methods like
     /// [`checked_add_signed`][Self::checked_add_signed].
     type Signed: PrimitiveSigned;
