@@ -519,55 +519,12 @@ pub trait PrimitiveInteger:
 
     /// The NonZero struct for this integer
     type NonZero: 
-        core::cmp::Eq
-        + core::cmp::Ord
-        + core::convert::TryFrom<Self, Error = TryFromIntError>
-        + core::fmt::Binary
-        + core::fmt::Debug
-        + core::fmt::LowerHex
-        + core::fmt::Octal
-        + core::fmt::UpperHex
-        + core::fmt::UpperExp
-        + core::fmt::LowerExp
-        + core::hash::Hash
+        core::convert::TryFrom<Self, Error = TryFromIntError>
         + core::ops::BitOr<Self, Output = Self::NonZero>
         + core::ops::BitOr<Self::NonZero, Output = Self::NonZero>
         + core::ops::BitOrAssign<Self>
         + core::ops::BitOrAssign<Self::NonZero>
-        + core::str::FromStr
-        + Into<Self>
-        + Copy
-        + Sized
-        + core::marker::Send
-        + core::marker::Sync
-        + core::marker::Unpin
-        + core::panic::RefUnwindSafe
-        + core::panic::UnwindSafe
-        // the error is always either TryFromIntError or Infallible and these are their shared traits
-        + core::convert::TryFrom<NonZero<i8>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<i16>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<i32>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<i64>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<i128>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<isize>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<u8>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<u16>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<u32>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<u64>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<u128>, Error: PrimitiveError>
-        + core::convert::TryFrom<NonZero<usize>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<i8>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<i16>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<i32>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<i64>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<i128>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<isize>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<u8>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<u16>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<u32>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<u64>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<u128>, Error: PrimitiveError>
-        + core::convert::TryInto<NonZero<usize>, Error: PrimitiveError>;
+        + Into<Self>;
 }
 
 /// Trait for references to primitive integer types ([`PrimitiveInteger`]).
@@ -742,7 +699,7 @@ macro_rules! impl_integer {
                 unsafe fn unchecked_sub(self, rhs: Self) -> Self;
             }
             
-            type NonZero = core::num::NonZero<Self>;
+            type NonZero = NonZero<Self>;
         }
 
         impl PrimitiveIntegerRef<$Integer> for &$Integer {}

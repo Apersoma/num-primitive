@@ -66,6 +66,7 @@ mod integer;
 mod number;
 mod signed;
 mod unsigned;
+mod nonzero;
 
 #[cfg(test)]
 mod tests;
@@ -77,3 +78,4 @@ pub use self::integer::{PrimitiveInteger, PrimitiveIntegerRef};
 pub use self::number::{PrimitiveNumber, PrimitiveNumberAs, PrimitiveNumberRef};
 pub use self::signed::{PrimitiveSigned, PrimitiveSignedRef};
 pub use self::unsigned::{PrimitiveUnsigned, PrimitiveUnsignedRef};
+pub use self::nonzero::{NonZeroPrimitiveInteger, NonZeroPrimitiveSigned, NonZeroPrimitiveUnsigned};
