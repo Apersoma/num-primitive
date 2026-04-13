@@ -21,12 +21,19 @@ use core::num::NonZero;
 /// implementors.
 pub trait NonZeroPrimitiveInteger:
     'static
+    + core::cmp::Eq
     + core::cmp::PartialEq
+    + core::cmp::Ord
     + core::cmp::PartialOrd
     + core::fmt::Debug
     + core::fmt::Display
     + core::fmt::LowerExp
     + core::fmt::UpperExp
+    + core::fmt::Binary
+    + core::fmt::LowerHex
+    + core::fmt::Octal
+    + core::fmt::UpperHex
+    + core::hash::Hash
     + core::marker::Copy
     + core::marker::Send
     + core::marker::Sync
@@ -34,13 +41,6 @@ pub trait NonZeroPrimitiveInteger:
     + core::panic::RefUnwindSafe
     + core::panic::UnwindSafe
     + core::str::FromStr<Err: PrimitiveError>
-    + core::cmp::Eq
-    + core::cmp::Ord
-    + core::hash::Hash
-    + core::fmt::Binary
-    + core::fmt::LowerHex
-    + core::fmt::Octal
-    + core::fmt::UpperHex
     + core::convert::TryFrom<NonZero<i8>, Error: PrimitiveError>
     + core::convert::TryFrom<NonZero<i16>, Error: PrimitiveError>
     + core::convert::TryFrom<NonZero<i32>, Error: PrimitiveError>
@@ -65,8 +65,6 @@ pub trait NonZeroPrimitiveInteger:
     + core::convert::TryInto<NonZero<u64>, Error: PrimitiveError>
     + core::convert::TryInto<NonZero<u128>, Error: PrimitiveError>
     + core::convert::TryInto<NonZero<usize>, Error: PrimitiveError>
-    + core::cmp::Ord
-    + core::fmt::Binary
     + core::ops::BitOr<Self, Output=Self>
     + core::ops::BitOr<Self::Zeroable, Output=Self>
     + core::ops::BitOrAssign<Self::Zeroable>

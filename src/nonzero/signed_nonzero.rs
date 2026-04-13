@@ -1,6 +1,8 @@
-use core::{convert::Infallible, num::NonZero};
+use core::convert::Infallible;
+use core::num::NonZero;
+use core::ops::{Neg, Div, DivAssign, Rem, RemAssign};
 
-use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveUnsigned, PrimitiveSigned};
+use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveUnsigned, PrimitiveSigned, PrimitiveUnsigned};
 
 /// A trait for [`NonZero`] of a signed integer.
 /// 
@@ -16,8 +18,15 @@ use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveUnsigned, PrimitiveSigned};
 /// 
 pub trait NonZeroPrimitiveSigned: 
     NonZeroPrimitiveInteger<Zeroable: PrimitiveSigned> 
-    + core::ops::Neg<Output=Self>
     + TryFrom<NonZero<i8>, Error=Infallible>
+    + Neg<Output=Self>
+where Self::Zeroable: PrimitiveSigned,
+    <Self::Unsigned as NonZeroPrimitiveInteger>::Zeroable: 
+        Div<Self::Unsigned, Output=<Self::Unsigned as NonZeroPrimitiveInteger>::Zeroable>
+        + DivAssign<Self::Unsigned>
+        + Rem<Self::Unsigned, Output=<Self::Unsigned as NonZeroPrimitiveInteger>::Zeroable> 
+        + RemAssign<Self::Unsigned>
+        + PrimitiveUnsigned
 {
     /// The unsigned nonzero type with the same size as this.
     type Unsigned: NonZeroPrimitiveUnsigned;

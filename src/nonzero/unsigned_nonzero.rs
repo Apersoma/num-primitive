@@ -1,6 +1,6 @@
 use core::{convert::Infallible, num::NonZero};
 
-use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveSigned};
+use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveSigned, PrimitiveUnsigned, PrimitiveSigned};
 
 /// A trait for [`NonZero`] of a unsigned integer.
 /// 
@@ -40,14 +40,13 @@ use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveSigned};
 /// ```
 pub trait NonZeroPrimitiveUnsigned: NonZeroPrimitiveInteger
     + TryFrom<NonZero<u8>, Error=Infallible>
-where Self::Zeroable:
-    // for some reason causes an error in `signed_nonzero` when uncommented
-    // don't ask why, I don't know the answer
-    // core::ops::Div<Self, Output=Self::Zeroable>
-    // + core::ops::DivAssign<Self>
-    // + core::ops::Rem<Self, Output=Self::Zeroable>
-    // + core::ops::RemAssign<Self>
-    // + PrimitiveUnsigned
+where <Self::Signed as NonZeroPrimitiveInteger>::Zeroable: PrimitiveSigned,
+    Self::Zeroable: 
+        core::ops::Div<Self, Output=Self::Zeroable>
+        + core::ops::DivAssign<Self>
+        + core::ops::Rem<Self, Output=Self::Zeroable>
+        + core::ops::RemAssign<Self>
+        + PrimitiveUnsigned
 {
     /// The unsigned nonzero type with the same size as this.
     type Signed: NonZeroPrimitiveSigned;
