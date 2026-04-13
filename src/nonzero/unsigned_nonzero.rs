@@ -1,7 +1,18 @@
-use core::num::NonZero;
+use core::{convert::Infallible, num::NonZero};
 
 use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveSigned};
 
+/// A trait for [`NonZero`] of a unsigned integer.
+/// 
+/// This encapsulates trait implementations, constants, and inherent methods that are common among
+/// all of the implementations of `NonZero<T> where T: PrimitiveUnsigned`.
+///
+/// See the corresponding items on the individual types for more documentation and examples.
+///
+/// This trait is sealed with a private trait to prevent downstream implementations, so we may
+/// continue to expand along with the standard library without worrying about breaking changes for
+/// implementors.
+/// 
 /// # Examples
 ///
 /// ```
@@ -25,21 +36,17 @@ use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveSigned};
 /// 
 /// let nz_48 = NonZero::new(48u16).unwrap();
 /// let nz_18 = NonZero::new(18).unwrap();
-/// let nz_6 = NonZero::new(6).unwrap();
 /// assert_eq!(gcd::<NonZero<u16>>(nz_48, nz_18).get(), 6);
 /// ```
 pub trait NonZeroPrimitiveUnsigned: NonZeroPrimitiveInteger
-    + Into<u128>
-    + Into<NonZero<u128>>
+    + TryFrom<NonZero<u8>, Error=Infallible>
 where Self::Zeroable:
-    core::ops::BitOr<Self, Output=Self>
-    + core::ops::BitOr<Self::Zeroable, Output=Self>
-    + core::ops::BitOrAssign<Self::Zeroable>
-    + core::ops::Div<Self, Output=Self::Zeroable>
-    + core::ops::DivAssign<Self>
-    + core::ops::Rem<Self, Output=Self::Zeroable>
-    + core::ops::RemAssign<Self>
-    // causes an error when uncommented
+    // for some reason causes an error in `signed_nonzero` when uncommented
+    // don't ask why, I don't know the answer
+    // core::ops::Div<Self, Output=Self::Zeroable>
+    // + core::ops::DivAssign<Self>
+    // + core::ops::Rem<Self, Output=Self::Zeroable>
+    // + core::ops::RemAssign<Self>
     // + PrimitiveUnsigned
 {
     /// The unsigned nonzero type with the same size as this.
@@ -47,20 +54,20 @@ where Self::Zeroable:
 
     /// Saturating integer addition. Computes `self + rhs` saturating to `Self::MAX` on overflow.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn saturating_add(self, rhs: Self) -> Self;
+    fn saturating_add(self, rhs: Self::Zeroable) -> Self;
     /// Checked integer addition. Computes `self + rhs`, returning `None` on overflow.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn checked_add(self, rhs: Self) -> Self;
+    fn checked_add(self, rhs: Self::Zeroable) -> Option<Self>;
     /// Returns the bit pattern of `self` reinterpreted as an signed integer of the same size.
     #[must_use = "this returns the result of the operation, without modifying the original"]
     fn cast_signed(self) -> Self::Signed;
 
     /// Integer log base 2. Computes `ilog₂(self)`.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn ilog2(self) -> Self::Signed;
+    fn ilog2(self) -> u32;
     /// Integer log base 2. Computes `ilog₁₀(self)`.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn ilog10(self) -> Self::Signed;
+    fn ilog10(self) -> u32;
 
     /// Integer square root. Computes the square root of `self`, rounding down to an integer.
     #[must_use = "this returns the result of the operation, without modifying the original"]
@@ -72,13 +79,9 @@ where Self::Zeroable:
 
     /// Computes the next power of 2 greater than `self`. Returns `None` if it overflows.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn checked_next_power_of_two(self) -> Self;
+    fn checked_next_power_of_two(self) -> Option<Self>;
 
     /// Checks if `self` is a power of 2.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn is_power_of_two(self) -> Self;
+    fn is_power_of_two(self) -> bool;
 }
-
-// impl NonZeroPrimitiveUnsigned for NonZero<u8> {
-//     type Signed = NonZero<i8>;
-// }

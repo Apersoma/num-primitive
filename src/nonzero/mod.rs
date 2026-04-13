@@ -1,10 +1,11 @@
 mod signed_nonzero;
 mod unsigned_nonzero;
+mod implement;
 
 pub use self::unsigned_nonzero::NonZeroPrimitiveUnsigned;
 pub use self::signed_nonzero::NonZeroPrimitiveSigned;
 
-use crate::{PrimitiveInteger, PrimitiveError, PrimitiveUnsigned};
+use crate::{PrimitiveInteger, PrimitiveError};
 use core::num::NonZero;
 
 
@@ -18,19 +19,6 @@ use core::num::NonZero;
 /// This trait is sealed with a private trait to prevent downstream implementations, so we may
 /// continue to expand along with the standard library without worrying about breaking changes for
 /// implementors.
-/// 
-/// # Examples
-///
-/// ```
-/// use core::ops::NonZero;
-/// use num_primitive::NonZeroPrimitiveInteger;
-///
-/// fn ceil_log2<T: NonZeroPrimitiveInteger>(x: <T>) -> u32 {
-///     
-/// }
-/// 
-/// assert_eq!(gcd::<NonZero<u8>>(48, 18), (2, 12));
-/// ```
 pub trait NonZeroPrimitiveInteger:
     'static
     + core::cmp::PartialEq
@@ -141,97 +129,3 @@ pub trait NonZeroPrimitiveInteger:
     /// on overflow based on the sign of the exact result.
     fn saturating_pow(self, exponent: u32) -> Self;
 }
-
-/*
-/// A trait
-pub trait NonZeroPrimitiveSigned: NonZeroPrimitiveInteger<Zeroable: PrimitiveSigned>  {
-    /// The unsigned nonzero type with the same size as this.
-    type Unsigned: NonZeroPrimitiveUnsigned;
-
-    /// Computes the absolute value of `self`.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn abs(self) -> Self;
-
-    /// Checked absolute value. Computes the absolute value of `self`, returning `None`
-    /// if it overflows.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn checked_abs(self) -> Option<Self>;
-
-    /// Saturating absolute value. Computes the absolute value of `self`, saturating to 
-    /// `Self::MAX` when it would overflow.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn saturating_abs(self) -> Self;
-
-    /// Overflowing absolute value. Computes the absolute value of `self`, returning a 
-    /// tuple of the result and a bool indicating if the operation overflowed.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn overflowing_abs(self) -> (Self, bool);
-
-    /// Overflowing absolute value. Computes the absolute value of `self`, wrapping when 
-    /// `self == Self::MIN`.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn wrapping_abs(self) -> Self;
-
-    // /// Computes the absolute value of `Self` without any wrapping or panicking.
-    // #[must_use = "this returns the result of the operation, without modifying the original"]
-    // fn unsigned_abs(self) -> Self::Unsigned;
-
-    /// Returns true if `self` is positive and `false` if it is negative.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn is_positive(self) -> bool;
-
-    /// Returns true if `self` is positive and `false` if it is negative.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn is_negative(self) -> bool;
-
-    /// Checked negation. Compute `-self`, returning `None` if it overflows.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn checked_neg(self) -> Self;
-
-    /// Checked negation. Compute `-self`, returning a tuple of the result and a bool 
-    /// indicating if the operation overflowed.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn overflowing_neg(self) -> Self;
-
-    /// Checked negation. Compute `-self`, saturating to `Self::MAX` when it would overflow.
-    #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn saturating_neg(self) -> Self;
-
-    // /// Returns the bit pattern of `self` reinterpreted as an unsigned integer of the same size.
-    // #[must_use = "this returns the result of the operation, without modifying the original"]
-    // fn cast_unsigned(self) -> Self::Unsigned;
-}
-*/
-
-macro_rules! impl_nonzero {
-    (@uint $($t:ty),+) => {
-        impl_nonzero!($($t, <$t as PrimitiveUnsigned>::Signed),+);
-    };
-    ($($t:ty),+) => {$(
-        impl NonZeroPrimitiveInteger for NonZero<$t> {
-            type Zeroable = $t;
-            forward! {
-                fn new(n: Self::Zeroable) -> Option<Self>;
-            }
-            forward! {
-                fn get(self) -> Self::Zeroable;
-                fn leading_zeros(self) -> u32;
-                fn trailing_zeros(self) -> u32;
-                fn checked_mul(self, rhs: Self) -> Option<Self>;
-                fn checked_pow(self, exponent: u32) -> Option<Self>;
-                fn saturating_pow(self, exponent: u32) -> Self;
-                fn count_ones(self) -> NonZero<u32>;
-            }
-            forward! {
-                unsafe fn new_unchecked(n: Self::Zeroable) -> Self;
-            }
-            // not forwarding because core's docs are inaccurate
-            // It specifies that it can only saturate to `Self::MAX` 
-            // even on signed types.
-            fn saturating_mul(self, rhs: Self) -> Self {
-                self.saturating_mul(rhs)
-            }
-        }
-    )+};
-}
-impl_nonzero!(@uint u8, u16, u32, u64, u128, usize);

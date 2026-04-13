@@ -1,13 +1,23 @@
-use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveUnsigned, PrimitiveSigned};
-use core::num::NonZero;
+use core::{convert::Infallible, num::NonZero};
 
-/// temp
+use crate::{NonZeroPrimitiveInteger, NonZeroPrimitiveUnsigned, PrimitiveSigned};
+
+/// A trait for [`NonZero`] of a signed integer.
+/// 
+/// This encapsulates trait implementations, constants, and inherent methods that are common among
+/// all of the implementations of `NonZero<T> where T: PrimitiveSigned`.
+///
+/// See the corresponding items on the individual types for more documentation and examples.
+///
+/// This trait is sealed with a private trait to prevent downstream implementations, so we may
+/// continue to expand along with the standard library without worrying about breaking changes for
+/// implementors.
+/// 
 /// 
 pub trait NonZeroPrimitiveSigned: 
     NonZeroPrimitiveInteger<Zeroable: PrimitiveSigned> 
     + core::ops::Neg<Output=Self>
-    + Into<i128>
-    + Into<NonZero<i128>>
+    + TryFrom<NonZero<i8>, Error=Infallible>
 {
     /// The unsigned nonzero type with the same size as this.
     type Unsigned: NonZeroPrimitiveUnsigned;
@@ -50,12 +60,12 @@ pub trait NonZeroPrimitiveSigned:
 
     /// Checked negation. Compute `-self`, returning `None` if it overflows.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn checked_neg(self) -> Self;
+    fn checked_neg(self) -> Option<Self>;
 
     /// Checked negation. Compute `-self`, returning a tuple of the result and a bool 
     /// indicating if the operation overflowed.
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    fn overflowing_neg(self) -> Self;
+    fn overflowing_neg(self) -> (Self, bool);
 
     /// Checked negation. Compute `-self`, saturating to `Self::MAX` when it would overflow.
     #[must_use = "this returns the result of the operation, without modifying the original"]
